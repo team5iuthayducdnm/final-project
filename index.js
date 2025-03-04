@@ -1,3 +1,5 @@
+let check = false;
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     event.preventDefault();
     getSlot();
@@ -6,7 +8,31 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
 async function getSlot() {
     let amount = 4;
-    const data = await getAllSlotInformation();
+    const result = await getAllSlotInformation();
+    const data = result.data;
+    const fire = result.fireData.fire;
+    if (fire) {
+        Swal.fire({
+            title: "Warning",
+            text: "The Car Parking Is On Fire",
+            icon: "error",
+            timer: 2500,
+        });
+        document.body.style.backgroundImage = "url('./burn.png')";
+        check = true;
+    } else {
+        if (check) {
+            Swal.fire({
+                title: "Notification",
+                text: "The Car Parking Is Safe",
+                icon: "success",
+                timer: 2500,
+            });
+            check = false;
+            document.body.style.backgroundImage = "url('./bg.png')";
+        }
+
+    }
 
     const boxItem = document.querySelector("#box-item");
     // Xóa nội dung cũ trước khi thêm mới
@@ -41,8 +67,8 @@ async function getSlot() {
 };
 
 async function getAllSlotInformation() {
-    const respond = await fetch("https://script.google.com/macros/s/AKfycby4MD6yYUN_b7oaMwIm-okSs4OAhjRrZJfS4UI62bPycZ-qdCrCuOs_3ru2hrroEzT1Bg/exec");
+    const respond = await fetch("https://script.google.com/macros/s/AKfycbxRxy-u9GQslKfTNXprGP01PtuJc5juqpc4hEXBB_ElY_UYa_ExxF5qXVtHLVUUVuBdsA/exec");
     const result = await respond.json();
-    console.log(result.data);
-    return result.data;
+    console.log(result);
+    return result;
 }
